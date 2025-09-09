@@ -1,18 +1,20 @@
-
-
 import SwiftUI
 import SwiftData
 
 struct NuevaMascotaView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
+    @Query private var owners: [Owner]
     
     @State private var nombre = ""
     @State private var especie: Especie = .perro
     @State private var raza = ""
     @State private var fechaNacimiento = Date()
-    @State private var nombreDueno = ""
-    @State private var telefonoDueno = ""
+    @State private var ownerSeleccionado: Owner?
+    
+    @State private var nuevoOwnerNombre = ""
+    @State private var nuevoOwnerTelefono = ""
+    @State private var crearNuevoOwner = false
     
     var body: some View {
         NavigationStack {
@@ -21,32 +23,51 @@ struct NuevaMascotaView: View {
                     TextField("Nombre", text: $nombre)
                     Picker("Especie", selection: $especie) {
                         ForEach(Especie.allCases, id: \.self) { especie in
-                            Text(especie.rawValue.capitalized)
+                            Text(especie.rawValue)
                         }
                     }
                     TextField("Raza", text: $raza)
                     DatePicker("Fecha de Nacimiento", selection: $fechaNacimiento, displayedComponents: .date)
                 }
                 
-                Section("Datos del Dueño") {
-                    TextField("Nombre del Dueño", text: $nombreDueno)
-                    TextField("Teléfono", text: $telefonoDueno)
-                        .keyboardType(.phonePad)
+                Section("Dueño") {
+                    Toggle("Crear nuevo dueño", isOn: $crearNuevoOwner)
+                    
+                    if crearNuevoOwner {
+                        TextField("Nombre del dueño", text: $nuevoOwnerNombre)
+                        TextField("Teléfono", text: $nuevoOwnerTelefono)
+                            .keyboardType(.phonePad)
+                    } else {
+                        Picker("Seleccionar dueño", selection: $ownerSeleccionado) {
+                            ForEach(owners) { owner in
+                                Text("\(owner.nombre) (\(owner.telefono))")
+                                    .tag(Optional(owner))
+                            }
+                        }
+                    }
                 }
             }
             .navigationTitle("Nueva Mascota")
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Guardar") {
-                        let nueva = Mascota(
+                        var owner: Owner?
+                        if crearNuevoOwner {
+                            let nuevoOwner = Owner(nombre: nuevoOwnerNombre, telefono: nuevoOwnerTelefono)
+                            context.insert(nuevoOwner)
+                            owner = nuevoOwner
+                        } else {
+                            owner = ownerSeleccionado
+                        }
+                        
+                        let nuevaMascota = Mascota(
                             nombre: nombre,
                             especie: especie,
                             raza: raza,
                             fechaNacimiento: fechaNacimiento,
-                            nombreDueno: nombreDueno,
-                            telefonoDueno: telefonoDueno
+                            owner: owner
                         )
-                        context.insert(nueva)
+                        context.insert(nuevaMascota)
                         try? context.save()
                         dismiss()
                     }

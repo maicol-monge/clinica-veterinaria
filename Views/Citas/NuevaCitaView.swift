@@ -11,10 +11,9 @@ struct NuevaCitaView: View {
     @State private var servicio: Servicio = .consulta
     @State private var detalle = ""
     
-    // reglas de servicios según especie
     var serviciosDisponibles: [Servicio] {
         if mascotaSeleccionada?.especie == .perro {
-            return [.consulta, .banoBasico, .banoUnas, .banoEstetico, .banoMedicado, .emergencia]
+            return [.consulta, .banoBasico, .banoUñas, .banoEstetico, .banoMedicado, .emergencia]
         } else {
             return [.consulta, .emergencia]
         }

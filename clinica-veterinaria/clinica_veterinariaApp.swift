@@ -1,5 +1,3 @@
-
-
 import SwiftUI
 import SwiftData
 
@@ -9,8 +7,6 @@ struct clinica_veterinariaApp: App {
         WindowGroup {
             ContentView()
         }
-        
-        .modelContainer(for: [Mascota.self, Cita.self])
+        .modelContainer(for: [Owner.self, Mascota.self, Cita.self])
     }
 }
-

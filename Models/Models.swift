@@ -1,62 +1,75 @@
 import Foundation
 import SwiftData
 
+// MARK: - Dueño
+@Model
+class Owner {
+    var nombre: String
+    var telefono: String
+    @Relationship(deleteRule: .cascade) var mascotas: [Mascota] = []
+
+    init(nombre: String, telefono: String) {
+        self.nombre = nombre
+        self.telefono = telefono
+    }
+}
+
+// MARK: - Mascota
 @Model
 class Mascota {
     var nombre: String
     var especie: Especie
     var raza: String
     var fechaNacimiento: Date
-    var nombreDueno: String
-    var telefonoDueno: String
-    
+    @Relationship(deleteRule: .nullify) var owner: Owner?
     @Relationship(deleteRule: .cascade) var citas: [Cita] = []
-    
-    init(nombre: String, especie: Especie, raza: String, fechaNacimiento: Date, nombreDueno: String, telefonoDueno: String) {
+
+    init(nombre: String, especie: Especie, raza: String, fechaNacimiento: Date, owner: Owner?) {
         self.nombre = nombre
         self.especie = especie
         self.raza = raza
         self.fechaNacimiento = fechaNacimiento
-        self.nombreDueno = nombreDueno
-        self.telefonoDueno = telefonoDueno
+        self.owner = owner
     }
 }
 
+// MARK: - Cita
 @Model
 class Cita {
     var fecha: Date
     var servicio: Servicio
-    var detalle: String?
     var estado: EstadoCita
-    
-    var mascota: Mascota?
-    
-    init(fecha: Date, servicio: Servicio, detalle: String? = nil, estado: EstadoCita = .pendiente, mascota: Mascota? = nil) {
+    var detalle: String?
+    @Relationship(deleteRule: .nullify) var mascota: Mascota?
+
+    init(fecha: Date, servicio: Servicio, estado: EstadoCita = .pendiente, detalle: String? = nil, mascota: Mascota?) {
         self.fecha = fecha
         self.servicio = servicio
-        self.detalle = detalle
         self.estado = estado
+        self.detalle = detalle
         self.mascota = mascota
     }
 }
 
-enum Especie: String, Codable, CaseIterable {
-    case perro, gato, conejo
+// MARK: - Enums
+enum Especie: String, CaseIterable, Codable {
+    case perro = "Perro"
+    case gato = "Gato"
+    case conejo = "Conejo"
 }
 
-enum Servicio: String, Codable, CaseIterable {
-    // Perros
-    case banoBasico = "Baño básico"
-    case banoUnas = "Baño con recorte de uñas"
-    case banoEstetico = "Baño estético"
-    case banoMedicado = "Baño medicado"
-    
-    // General
+enum Servicio: String, CaseIterable, Codable {
     case consulta = "Consulta médica"
     case emergencia = "Emergencia"
+
+    // Solo para perros
+    case banoBasico = "Baño básico"
+    case banoUñas = "Baño con recorte de uñas"
+    case banoEstetico = "Baño estético"
+    case banoMedicado = "Baño medicado"
 }
 
-enum EstadoCita: String, Codable, CaseIterable {
+enum EstadoCita: String, CaseIterable, Codable {
     case pendiente = "Pendiente"
     case aceptada = "Aceptada"
     case rechazada = "Rechazada"

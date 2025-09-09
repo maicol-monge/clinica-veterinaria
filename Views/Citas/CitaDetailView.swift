@@ -1,52 +1,43 @@
-//
-//  CitaDetailView.swift
-//  clinica-veterinaria
-//
-//  Created by Luis Vasquez on 8/9/25.
-//
-
-
 import SwiftUI
 import SwiftData
 
 struct CitaDetailView: View {
     @Environment(\.modelContext) private var context
-    @Bindable var cita: Cita
+    @Environment(\.dismiss) private var dismiss
+    
+    var cita: Cita
     
     var body: some View {
         Form {
-            Section("Información de la Cita") {
-                Text("📅 Fecha: \(cita.fecha.formatted(date: .abbreviated, time: .shortened))")
+            Section("Mascota") {
+                Text(cita.mascota?.nombre ?? "Sin mascota")
+            }
+            
+            Section("Detalles de la Cita") {
+                Text("Fecha: \(cita.fecha.formatted(date: .abbreviated, time: .shortened))")
                 Text("Servicio: \(cita.servicio.rawValue)")
                 if let detalle = cita.detalle, !detalle.isEmpty {
-                    Text("Detalle: \(detalle)")
-                }
-                Text("Estado: \(cita.estado.rawValue)")
-            }
-            
-            if let mascota = cita.mascota {
-                Section("Mascota") {
-                    Text("🐾 \(mascota.nombre)")
-                    Text("Especie: \(mascota.especie.rawValue.capitalized)")
-                    Text("Dueño: \(mascota.nombreDueno)")
+                    Text("Nota: \(detalle)")
                 }
             }
             
-            Section("Acciones") {
-                Button("✅ Aceptar") {
-                    cita.estado = .aceptada
-                    try? context.save()
+            Section("Estado") {
+                Picker("Estado", selection: $cita.estado) {
+                    ForEach(EstadoCita.allCases, id: \.self) { estado in
+                        Text(estado.rawValue).tag(estado)
+                    }
                 }
-                Button("❌ Rechazar") {
-                    cita.estado = .rechazada
+                .pickerStyle(.segmented)
+            }
+        }
+        .navigationTitle("Detalle Cita")
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button("Guardar") {
                     try? context.save()
-                }
-                Button("✔️ Completar") {
-                    cita.estado = .completada
-                    try? context.save()
+                    dismiss()
                 }
             }
         }
-        .navigationTitle("Cita")
     }
 }

@@ -4,7 +4,7 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             List {
-                NavigationLink("📋 Expedientes de Mascotas") {
+                NavigationLink("👤 Dueños y Mascotas") {
                     MascotasView()
                 }
                 NavigationLink("📅 Citas") {
@@ -14,7 +14,4 @@ struct ContentView: View {
             .navigationTitle("Clínica Veterinaria")
         }
     }
-}
-#Preview {
-    ContentView()
 }

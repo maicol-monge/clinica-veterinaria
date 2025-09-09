@@ -1,38 +1,48 @@
-//
-//  CitasView.swift
-//  clinica-veterinaria
-//
-//  Created by Luis Vasquez on 8/9/25.
-//
-
-
 import SwiftUI
 import SwiftData
 
 struct CitasView: View {
     @Environment(\.modelContext) private var context
-    @Query(sort: \Cita.fecha) private var citas: [Cita]
+    @Query(sort: \Cita.fecha, order: .forward) private var citas: [Cita]
     
     @State private var mostrarNuevaCita = false
+    @State private var filtroEstado: EstadoCita? = nil
+    
+    var citasFiltradas: [Cita] {
+        citas.filter { cita in
+            filtroEstado == nil || cita.estado == filtroEstado
+        }
+    }
     
     var body: some View {
         List {
-            ForEach(citas) { cita in
-                NavigationLink(cita.servicio.rawValue) {
+            ForEach(citasFiltradas) { cita in
+                NavigationLink {
                     CitaDetailView(cita: cita)
+                } label: {
+                    VStack(alignment: .leading) {
+                        Text(cita.mascota?.nombre ?? "Sin mascota")
+                            .font(.headline)
+                        Text("\(cita.servicio.rawValue) - \(cita.fecha.formatted(date: .abbreviated, time: .shortened))")
+                        Text("Estado: \(cita.estado.rawValue)").foregroundStyle(.secondary)
+                    }
                 }
-            }
-            .onDelete { indices in
-                for index in indices {
-                    context.delete(citas[index])
-                }
-                try? context.save()
             }
         }
         .navigationTitle("Citas")
         .toolbar {
-            Button(action: { mostrarNuevaCita = true }) {
-                Label("Agregar", systemImage: "plus")
+            ToolbarItem(placement: .navigationBarLeading) {
+                Menu("Filtrar") {
+                    Button("Todas") { filtroEstado = nil }
+                    ForEach(EstadoCita.allCases, id: \.self) { estado in
+                        Button(estado.rawValue) { filtroEstado = estado }
+                    }
+                }
+            }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: { mostrarNuevaCita = true }) {
+                    Label("Agregar", systemImage: "plus")
+                }
             }
         }
         .sheet(isPresented: $mostrarNuevaCita) {
