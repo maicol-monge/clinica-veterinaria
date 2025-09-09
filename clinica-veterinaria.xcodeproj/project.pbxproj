@@ -30,6 +30,21 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		A06901E32E6FD5F700A3135F /* Views */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A06901E42E6FD60900A3135F /* Extensions */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		A06901FA2E6FDABE00A3135F /* Models */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Models;
+			sourceTree = "<group>";
+		};
 		A0D3E1E02E6E39E700649CCD /* clinica-veterinaria */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = "clinica-veterinaria";
@@ -75,6 +90,9 @@
 		A0D3E1D52E6E39E700649CCD = {
 			isa = PBXGroup;
 			children = (
+				A06901FA2E6FDABE00A3135F /* Models */,
+				A06901E42E6FD60900A3135F /* Extensions */,
+				A06901E32E6FD5F700A3135F /* Views */,
 				A0D3E1E02E6E39E700649CCD /* clinica-veterinaria */,
 				A0D3E1EE2E6E39E800649CCD /* clinica-veterinariaTests */,
 				A0D3E1F82E6E39E900649CCD /* clinica-veterinariaUITests */,
@@ -108,6 +126,9 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				A06901E32E6FD5F700A3135F /* Views */,
+				A06901E42E6FD60900A3135F /* Extensions */,
+				A06901FA2E6FDABE00A3135F /* Models */,
 				A0D3E1E02E6E39E700649CCD /* clinica-veterinaria */,
 			);
 			name = "clinica-veterinaria";

@@ -1,24 +1,20 @@
-//
-//  ContentView.swift
-//  clinica-veterinaria
-//
-//  Created by Luis Vasquez on 7/9/25.
-//
-
 import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationStack {
+            List {
+                NavigationLink("📋 Expedientes de Mascotas") {
+                    MascotasView()
+                }
+                NavigationLink("📅 Citas") {
+                    CitasView()
+                }
+            }
+            .navigationTitle("Clínica Veterinaria")
         }
-        .padding()
     }
 }
-
 #Preview {
     ContentView()
 }

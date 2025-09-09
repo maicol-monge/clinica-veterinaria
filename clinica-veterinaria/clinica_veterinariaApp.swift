@@ -1,11 +1,7 @@
-//
-//  clinica_veterinariaApp.swift
-//  clinica-veterinaria
-//
-//  Created by Luis Vasquez on 7/9/25.
-//
+
 
 import SwiftUI
+import SwiftData
 
 @main
 struct clinica_veterinariaApp: App {
@@ -13,5 +9,8 @@ struct clinica_veterinariaApp: App {
         WindowGroup {
             ContentView()
         }
+        
+        .modelContainer(for: [Mascota.self, Cita.self])
     }
 }
+
