@@ -46,8 +46,8 @@ struct NuevaCitaView: View {
                         let nueva = Cita(
                             fecha: fecha,
                             servicio: servicio,
-                            detalle: detalle,
                             estado: .pendiente,
+                            detalle: detalle,
                             mascota: mascota
                         )
                         context.insert(nueva)

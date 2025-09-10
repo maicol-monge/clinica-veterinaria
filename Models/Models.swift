@@ -18,15 +18,21 @@ class Owner {
 @Model
 class Mascota {
     var nombre: String
-    var especie: Especie
+    private var especieRaw: String   // se guarda como String en BD
     var raza: String
     var fechaNacimiento: Date
     @Relationship(deleteRule: .nullify) var owner: Owner?
     @Relationship(deleteRule: .cascade) var citas: [Cita] = []
 
+    // Computed property para usar el enum en la app
+    var especie: Especie {
+        get { Especie(rawValue: especieRaw) ?? .perro }
+        set { especieRaw = newValue.rawValue }
+    }
+
     init(nombre: String, especie: Especie, raza: String, fechaNacimiento: Date, owner: Owner?) {
         self.nombre = nombre
-        self.especie = especie
+        self.especieRaw = especie.rawValue
         self.raza = raza
         self.fechaNacimiento = fechaNacimiento
         self.owner = owner
@@ -37,15 +43,26 @@ class Mascota {
 @Model
 class Cita {
     var fecha: Date
-    var servicio: Servicio
-    var estado: EstadoCita
+    private var servicioRaw: String
+    private var estadoRaw: String
     var detalle: String?
     @Relationship(deleteRule: .nullify) var mascota: Mascota?
 
+    // Computed para trabajar con enums
+    var servicio: Servicio {
+        get { Servicio(rawValue: servicioRaw) ?? .consulta }
+        set { servicioRaw = newValue.rawValue }
+    }
+    
+    var estado: EstadoCita {
+        get { EstadoCita(rawValue: estadoRaw) ?? .pendiente }
+        set { estadoRaw = newValue.rawValue }
+    }
+
     init(fecha: Date, servicio: Servicio, estado: EstadoCita = .pendiente, detalle: String? = nil, mascota: Mascota?) {
         self.fecha = fecha
-        self.servicio = servicio
-        self.estado = estado
+        self.servicioRaw = servicio.rawValue
+        self.estadoRaw = estado.rawValue
         self.detalle = detalle
         self.mascota = mascota
     }

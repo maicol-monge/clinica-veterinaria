@@ -5,7 +5,7 @@ struct CitaDetailView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     
-    var cita: Cita
+    @Bindable var cita: Cita   // ✅ Esto permite editar directamente propiedades del modelo
     
     var body: some View {
         Form {
