@@ -45,6 +45,11 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
+		A06901FC2E71249600A3135F /* Resources */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		A0D3E1E02E6E39E700649CCD /* clinica-veterinaria */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = "clinica-veterinaria";
@@ -90,6 +95,7 @@
 		A0D3E1D52E6E39E700649CCD = {
 			isa = PBXGroup;
 			children = (
+				A06901FC2E71249600A3135F /* Resources */,
 				A06901FA2E6FDABE00A3135F /* Models */,
 				A06901E42E6FD60900A3135F /* Extensions */,
 				A06901E32E6FD5F700A3135F /* Views */,
@@ -129,6 +135,7 @@
 				A06901E32E6FD5F700A3135F /* Views */,
 				A06901E42E6FD60900A3135F /* Extensions */,
 				A06901FA2E6FDABE00A3135F /* Models */,
+				A06901FC2E71249600A3135F /* Resources */,
 				A0D3E1E02E6E39E700649CCD /* clinica-veterinaria */,
 			);
 			name = "clinica-veterinaria";
