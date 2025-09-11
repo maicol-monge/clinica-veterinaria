@@ -1,36 +1,27 @@
-
 import SwiftUI
 
 struct CitaCard: View {
     var cita: Cita
-    var mascota: Mascota
 
     var body: some View {
-        HStack {
-            Image(systemName: "calendar")
-                .font(.title2)
-                .foregroundStyle(.brandPrimary)
-                .padding(.trailing, 8)
+        VStack(alignment: .leading, spacing: 8) {
+            Text(cita.servicio.rawValue)
+                .font(.headline)
+                .foregroundStyle(Color.brandPrimary)
 
-            VStack(alignment: .leading) {
-                Text(mascota.nombre)
-                    .font(.system(.title3, weight: .bold, design: .rounded))
-                    .foregroundStyle(.primary)
+            Text(cita.fecha, style: .date)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
 
-                Text("\(cita.servicio.rawValue) • \(cita.estado.rawValue)")
-                    .font(.system(.subheadline, design: .rounded))
-                    .foregroundStyle(.secondary)
-
-                Text(cita.fecha, style: .date)
-                    .font(.system(.footnote, design: .rounded))
-                    .foregroundStyle(.secondary)
-            }
-
-            Spacer()
+            Text(cita.estado.rawValue)
+                .font(.caption)
+                .padding(6)
+                .background(Color.brandPrimary.opacity(0.1))
+                .cornerRadius(8)
         }
         .padding()
-        .background(Color.brandSecondary.opacity(0.1))
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.Brand.primary.opacity(0.2))
         .cornerRadius(12)
-        .shadow(radius: 1)
     }
 }

@@ -10,7 +10,7 @@ struct MenuButton: View {
             HStack {
                 Image(systemName: icon)
                     .font(.title2)
-                    .foregroundStyle(Color.brandPrimary)
+                    .foregroundStyle(Color.Brand.primary)
                 Text(text)
                     .font(.system(.headline, design: .rounded))
                     .foregroundStyle(Color.brandPrimary)
