@@ -15,6 +15,18 @@ struct NuevaMascotaView: View {
     @State private var nuevoOwnerNombre = ""
     @State private var nuevoOwnerTelefono = ""
     @State private var crearNuevoOwner = false
+    @State private var searchText = ""
+    
+    @State private var mostrarAlerta = false
+    @State private var mensajeAlerta = ""
+    
+    var ownersFiltrados: [Owner] {
+        owners.filter { owner in
+            searchText.isEmpty ||
+            owner.nombre.localizedCaseInsensitiveContains(searchText) ||
+            owner.telefono.localizedCaseInsensitiveContains(searchText)
+        }
+    }
     
     var body: some View {
         NavigationStack {
@@ -38,12 +50,20 @@ struct NuevaMascotaView: View {
                         TextField("Teléfono", text: $nuevoOwnerTelefono)
                             .keyboardType(.phonePad)
                     } else {
-                        Picker("Seleccionar dueño", selection: $ownerSeleccionado) {
-                            ForEach(owners) { owner in
-                                Text("\(owner.nombre) (\(owner.telefono))")
-                                    .tag(Optional(owner))
+                        TextField("Buscar dueño...", text: $searchText)
+                        List(ownersFiltrados) { owner in
+                            Button {
+                                ownerSeleccionado = owner
+                            } label: {
+                                HStack {
+                                    Text("\(owner.nombre) (\(owner.telefono))")
+                                    if ownerSeleccionado == owner {
+                                        Image(systemName: "checkmark")
+                                    }
+                                }
                             }
                         }
+                        .frame(minHeight: 100, maxHeight: 200)
                     }
                 }
             }
@@ -51,31 +71,58 @@ struct NuevaMascotaView: View {
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Guardar") {
-                        var owner: Owner?
-                        if crearNuevoOwner {
-                            let nuevoOwner = Owner(nombre: nuevoOwnerNombre, telefono: nuevoOwnerTelefono)
-                            context.insert(nuevoOwner)
-                            owner = nuevoOwner
-                        } else {
-                            owner = ownerSeleccionado
+                        if validarCampos() {
+                            var owner: Owner?
+                            if crearNuevoOwner {
+                                let nuevoOwner = Owner(nombre: nuevoOwnerNombre, telefono: nuevoOwnerTelefono)
+                                context.insert(nuevoOwner)
+                                owner = nuevoOwner
+                            } else {
+                                owner = ownerSeleccionado
+                            }
+                            
+                            let nuevaMascota = Mascota(
+                                nombre: nombre,
+                                especie: especie,
+                                raza: raza,
+                                fechaNacimiento: fechaNacimiento,
+                                owner: owner
+                            )
+                            context.insert(nuevaMascota)
+                            try? context.save()
+                            dismiss()
                         }
-                        
-                        let nuevaMascota = Mascota(
-                            nombre: nombre,
-                            especie: especie,
-                            raza: raza,
-                            fechaNacimiento: fechaNacimiento,
-                            owner: owner
-                        )
-                        context.insert(nuevaMascota)
-                        try? context.save()
-                        dismiss()
                     }
                 }
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancelar") { dismiss() }
                 }
             }
+            .alert("Error", isPresented: $mostrarAlerta) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text(mensajeAlerta)
+            }
         }
+    }
+    
+    private func validarCampos() -> Bool {
+        if nombre.trimmingCharacters(in: .whitespaces).isEmpty {
+            mensajeAlerta = "El nombre de la mascota es obligatorio."
+            mostrarAlerta = true
+            return false
+        }
+        if crearNuevoOwner {
+            if nuevoOwnerNombre.isEmpty || nuevoOwnerTelefono.isEmpty {
+                mensajeAlerta = "Debes ingresar nombre y teléfono del dueño."
+                mostrarAlerta = true
+                return false
+            }
+        } else if ownerSeleccionado == nil {
+            mensajeAlerta = "Debes seleccionar un dueño existente."
+            mostrarAlerta = true
+            return false
+        }
+        return true
     }
 }

@@ -4,29 +4,25 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             VStack(spacing: 24) {
-                // Logo
                 Image("logo")
                     .resizable()
                     .scaledToFit()
                     .frame(height: 280)
-                
+
                 Text("Bienvenidos")
-                    .font(.system(size: 34, weight: .bold, design: .rounded)) // ✅ corregido
-                    .foregroundStyle(Color.brandPrimary)
+                    .font(.system(size: 34, weight: .bold, design: .rounded))
+                    .foregroundStyle(Color.Brand.primary)
                     .padding(.top, 32)
 
                 VStack(spacing: 16) {
                     NavigationLink(destination: MascotasView()) {
-                        MenuButton(text: "Mis Mascotas", icon: "pawprint.fill") {}
+                        MenuButton(text: "Mis Mascotas", icon: "pawprint.fill")
+                            .foregroundStyle(Color.Brand.secondary)
                     }
 
                     NavigationLink(destination: CitasView()) {
-                        MenuButton(text: "Citas", icon: "calendar") {}
-                    }
-
-                    // 🔧 Opción 1: Si no tienes ExpedientesView, comenta o cambia a otra vista
-                    NavigationLink(destination: MascotasView()) {
-                        MenuButton(text: "Expedientes", icon: "doc.text.fill") {}
+                        MenuButton(text: "Citas", icon: "calendar")
+                            .foregroundStyle(Color.Brand.secondary)
                     }
                 }
                 .padding(.horizontal, 20)
@@ -34,7 +30,7 @@ struct ContentView: View {
                 Spacer()
             }
             .background(Color(.systemGroupedBackground))
-            .navigationBarHidden(true)
+            .toolbar(.hidden, for: .navigationBar)
         }
     }
 }

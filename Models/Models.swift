@@ -14,23 +14,23 @@ class Owner {
     }
 }
 
-// MARK: - Mascota
 @Model
 class Mascota {
+    var id: UUID   // ← NUEVO
     var nombre: String
-    private var especieRaw: String   // se guarda como String en BD
+    private var especieRaw: String
     var raza: String
     var fechaNacimiento: Date
     @Relationship(deleteRule: .nullify) var owner: Owner?
     @Relationship(deleteRule: .cascade) var citas: [Cita] = []
 
-    // Computed property para usar el enum en la app
     var especie: Especie {
         get { Especie(rawValue: especieRaw) ?? .perro }
         set { especieRaw = newValue.rawValue }
     }
 
     init(nombre: String, especie: Especie, raza: String, fechaNacimiento: Date, owner: Owner?) {
+        self.id = UUID()   // ← se genera automáticamente
         self.nombre = nombre
         self.especieRaw = especie.rawValue
         self.raza = raza
@@ -38,6 +38,7 @@ class Mascota {
         self.owner = owner
     }
 }
+
 
 // MARK: - Cita
 @Model

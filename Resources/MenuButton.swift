@@ -3,22 +3,18 @@ import SwiftUI
 struct MenuButton: View {
     var text: String
     var icon: String
-    var action: () -> Void
 
     var body: some View {
-        Button(action: action) {
-            HStack {
-                Image(systemName: icon)
-                    .font(.title2)
-                    .foregroundStyle(Color.Brand.primary)
-                Text(text)
-                    .font(.system(.headline, design: .rounded))
-                    .foregroundStyle(Color.brandPrimary)
-            }
-            .padding()
-            .frame(maxWidth: .infinity)
-            .background(Color.brandSecondary.opacity(0.1))
-            .cornerRadius(12)
+        HStack {
+            Image(systemName: icon)
+                .font(.title2)
+            Text(text)
+                .font(.system(.headline, design: .rounded))
         }
+        .padding()
+        .frame(maxWidth: .infinity)
+        .background(Color.Brand.primary.opacity(0.2))
+        .cornerRadius(12)
+        .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 2)
     }
 }

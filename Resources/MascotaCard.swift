@@ -25,7 +25,7 @@ struct MascotaCard: View {
             Spacer()
         }
         .padding()
-        .background(Color.brandSecondary.opacity(0.1))
+        .background(Color.Brand.secondary.opacity(0.1))
         .cornerRadius(12)
         .shadow(radius: 1)
     }
