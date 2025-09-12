@@ -29,80 +29,135 @@ struct NuevaMascotaView: View {
     }
     
     var body: some View {
-        NavigationStack {
-            Form {
-                Section("Datos de la Mascota") {
+        ScrollView {
+            VStack(spacing: 20) {
+                
+                // 🐾 Datos de la Mascota
+                VStack(alignment: .leading, spacing: 12) {
+                    Label("Datos de la Mascota", systemImage: "pawprint.fill")
+                        .font(.headline)
+                        .foregroundStyle(Color.Brand.primary)
+                    
                     TextField("Nombre", text: $nombre)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                    
                     Picker("Especie", selection: $especie) {
                         ForEach(Especie.allCases, id: \.self) { especie in
-                            Text(especie.rawValue)
+                            Text(especie.rawValue).tag(especie)
                         }
                     }
+                    .pickerStyle(.segmented)
+                    
                     TextField("Raza", text: $raza)
-                    DatePicker("Fecha de Nacimiento", selection: $fechaNacimiento, displayedComponents: .date)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                    
+                    DatePicker("Nacimiento", selection: $fechaNacimiento, displayedComponents: .date)
                 }
+                .padding()
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Color.Brand.primary.opacity(0.08))
+                .cornerRadius(16)
+                .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 2)
                 
-                Section("Dueño") {
+                // 👤 Dueño
+                VStack(alignment: .leading, spacing: 12) {
+                    Label("Dueño", systemImage: "person.fill")
+                        .font(.headline)
+                        .foregroundStyle(Color.Brand.primary)
+                    
                     Toggle("Crear nuevo dueño", isOn: $crearNuevoOwner)
                     
                     if crearNuevoOwner {
                         TextField("Nombre del dueño", text: $nuevoOwnerNombre)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
                         TextField("Teléfono", text: $nuevoOwnerTelefono)
                             .keyboardType(.phonePad)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
                     } else {
                         TextField("Buscar dueño...", text: $searchText)
-                        List(ownersFiltrados) { owner in
-                            Button {
-                                ownerSeleccionado = owner
-                            } label: {
-                                HStack {
-                                    Text("\(owner.nombre) (\(owner.telefono))")
-                                    if ownerSeleccionado == owner {
-                                        Image(systemName: "checkmark")
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                        
+                        if ownersFiltrados.isEmpty {
+                            Text("No se encontraron dueños")
+                                .foregroundStyle(Color.Brand.secondary)
+                                .padding(.top, 4)
+                        } else {
+                            VStack(spacing: 8) {
+                                ForEach(ownersFiltrados) { owner in
+                                    Button {
+                                        ownerSeleccionado = owner
+                                    } label: {
+                                        HStack {
+                                            VStack(alignment: .leading) {
+                                                Text(owner.nombre)
+                                                    .font(.headline)
+                                                    .foregroundStyle(Color.Brand.secondary)
+                                                Text(owner.telefono)
+                                                    .font(.subheadline)
+                                                    .foregroundStyle(Color.Brand.secondary)
+                                            }
+                                            Spacer()
+                                            if ownerSeleccionado == owner {
+                                                Image(systemName: "checkmark.circle.fill")
+                                                    .foregroundStyle(Color.Brand.primary)
+                                            }
+                                        }
+                                        .padding(8)
+                                        .background(Color.Brand.primary.opacity(0.05))
+                                        .cornerRadius(12)
                                     }
                                 }
                             }
                         }
-                        .frame(minHeight: 100, maxHeight: 200)
                     }
                 }
+                .padding()
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Color.Brand.primary.opacity(0.08))
+                .cornerRadius(16)
+                .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 2)
             }
-            .navigationTitle("Nueva Mascota")
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Guardar") {
-                        if validarCampos() {
-                            var owner: Owner?
-                            if crearNuevoOwner {
-                                let nuevoOwner = Owner(nombre: nuevoOwnerNombre, telefono: nuevoOwnerTelefono)
-                                context.insert(nuevoOwner)
-                                owner = nuevoOwner
-                            } else {
-                                owner = ownerSeleccionado
-                            }
-                            
-                            let nuevaMascota = Mascota(
-                                nombre: nombre,
-                                especie: especie,
-                                raza: raza,
-                                fechaNacimiento: fechaNacimiento,
-                                owner: owner
-                            )
-                            context.insert(nuevaMascota)
-                            try? context.save()
-                            dismiss()
+            .padding()
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .background(Color.Brand.background)
+        .navigationTitle("Nueva Mascota")
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button("Guardar") {
+                    if validarCampos() {
+                        var owner: Owner?
+                        if crearNuevoOwner {
+                            let nuevoOwner = Owner(nombre: nuevoOwnerNombre, telefono: nuevoOwnerTelefono)
+                            context.insert(nuevoOwner)
+                            owner = nuevoOwner
+                        } else {
+                            owner = ownerSeleccionado
                         }
+                        
+                        let nuevaMascota = Mascota(
+                            nombre: nombre,
+                            especie: especie,
+                            raza: raza,
+                            fechaNacimiento: fechaNacimiento,
+                            owner: owner
+                        )
+                        context.insert(nuevaMascota)
+                        try? context.save()
+                        dismiss()
                     }
                 }
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancelar") { dismiss() }
-                }
+                .foregroundStyle(Color.Brand.primary)
             }
-            .alert("Error", isPresented: $mostrarAlerta) {
-                Button("OK", role: .cancel) {}
-            } message: {
-                Text(mensajeAlerta)
+            ToolbarItem(placement: .cancellationAction) {
+                Button("Cancelar") { dismiss() }
+                    .foregroundStyle(.red)
             }
+        }
+        .alert("Error", isPresented: $mostrarAlerta) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(mensajeAlerta)
         }
     }
     

@@ -110,17 +110,23 @@ struct NuevaCitaView: View {
                         
                         Picker("Servicio", selection: $servicio) {
                             ForEach(serviciosDisponibles(), id: \.self) { s in
-                                Text(s.rawValue).tag(s)
+                                Text(s.rawValue)
+                                    .bold()
                             }
-                            .foregroundStyle(Color.Brand.secondary)
                         }
                         .pickerStyle(.menu)
+                        .tint(Color.Brand.secondary)
+                        .bold()
                         
                         Text(descripcionServicio(servicio))
                             .font(.footnote)
                             .foregroundStyle(Color.Brand.secondary)
+                            .frame(width: 350)
                     }
+                    
+                    
                 }
+
                 
                 // 📝 Detalles
                 VStack(alignment: .leading, spacing: 12) {

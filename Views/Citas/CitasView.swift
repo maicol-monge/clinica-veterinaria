@@ -9,8 +9,8 @@ struct CitasView: View {
     @State private var mostrarNuevaCita = false
     
     // 🔑 Filtros
-    @State private var fechaInicio: Date = Calendar.current.date(byAdding: .month, value: -1, to: Date()) ?? Date()
-    @State private var fechaFin: Date = Calendar.current.date(byAdding: .month, value: 1, to: Date()) ?? Date()
+    @State private var fechaInicio: Date = Calendar.current.date(byAdding: .month, value: 0, to: Date()) ?? Date()
+    @State private var fechaFin: Date = Calendar.current.date(byAdding: .month, value: 0, to: Date()) ?? Date()
     @State private var estadoSeleccionado: EstadoCita? = nil  // nil = todos
     
     private var dateFormatter: DateFormatter {
@@ -22,21 +22,26 @@ struct CitasView: View {
 
     // 🔎 Lógica de filtrado
     var citasFiltradas: [Cita] {
-        citas.filter { cita in
+        return citas.filter { cita in
+            // Búsqueda por texto
             let fechaTexto = dateFormatter.string(from: cita.fecha)
-            
             let coincideTexto = searchText.isEmpty ||
                 cita.servicio.rawValue.localizedCaseInsensitiveContains(searchText) ||
-                cita.mascota?.nombre.localizedCaseInsensitiveContains(searchText) ?? false ||
-                cita.mascota?.id.uuidString.localizedCaseInsensitiveContains(searchText) ?? false ||
+                (cita.mascota?.nombre.localizedCaseInsensitiveContains(searchText) ?? false) ||
+                (cita.mascota?.id.uuidString.localizedCaseInsensitiveContains(searchText) ?? false) ||
                 fechaTexto.localizedCaseInsensitiveContains(searchText)
-            
-            let coincideFecha = (cita.fecha >= fechaInicio && cita.fecha <= fechaFin)
+
+            // Búsqueda por fecha (solo día/mes/año)
+            let coincideFecha = Calendar.current.compare(cita.fecha, to: fechaInicio, toGranularity: .day) != .orderedAscending &&
+                                Calendar.current.compare(cita.fecha, to: fechaFin, toGranularity: .day) != .orderedDescending
+
+            // Búsqueda por estado
             let coincideEstado = estadoSeleccionado == nil || cita.estado == estadoSeleccionado
-            
+
             return coincideTexto && coincideFecha && coincideEstado
         }
     }
+
     
     // 🔎 Ícono según servicio
     private func iconoParaServicio(_ servicio: Servicio) -> String {

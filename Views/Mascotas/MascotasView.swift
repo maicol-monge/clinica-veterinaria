@@ -78,7 +78,9 @@ struct MascotasView: View {
             }
         }
         .sheet(isPresented: $mostrarNuevaMascota) {
-            NuevaMascotaView()
-        }
+                    NavigationStack {
+                        NuevaMascotaView()
+                    }
+                }
     }
 }
