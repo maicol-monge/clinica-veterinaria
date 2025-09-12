@@ -16,7 +16,7 @@ struct ContentView: View {
 
                 VStack(spacing: 16) {
                     NavigationLink(destination: MascotasView()) {
-                        MenuButton(text: "Mis Mascotas", icon: "pawprint.fill")
+                        MenuButton(text: "Mascotas", icon: "pawprint.fill")
                             .foregroundStyle(Color.Brand.secondary)
                     }
 
